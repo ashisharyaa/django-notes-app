@@ -20,7 +20,6 @@ pipeline {
             steps {
                 echo "Scan Image with Trivy"
                 sh "trivy image smihah/my-notes-app:latest --scanners vuln"
-
             }
         }
         
@@ -40,10 +39,8 @@ pipeline {
         stage("Deploy") {
             steps {
                 echo "Deploy image from Docker Hub to AWS EC2"
-                    sh "docker-compose down && docker-compose up -d"
-                }
+                sh "docker-compose down && docker-compose up -d"
             }
         }
-
     }
 }
