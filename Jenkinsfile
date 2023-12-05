@@ -40,7 +40,7 @@ pipeline {
         stage("Deploy"){
             steps{
                 echo "Deploy image from docker hub to AWS EC2"
-                sh "docker run -d -p 8000:8000 smihah/my-notes-app:latest "
+                sh "docker-compose down && docker-compose up -d"
             }
         }
     }
