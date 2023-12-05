@@ -40,7 +40,7 @@ pipeline {
         stage("Deploy") {
             steps {
                 echo "Deploy image from Docker Hub to AWS EC2"
-                dir('/var/lib/jenkins/workspace/Django-note-app/Jenkinsfile') {
+                dir('/var/lib/jenkins/workspace/Django-note-app') {
                     sh "docker-compose down && docker-compose up -d"
                 }
             }
