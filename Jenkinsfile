@@ -36,8 +36,8 @@ pipeline {
             }
         }
         
-        stage("Deploy") {
-            steps {
+       stage("Deploy") {
+          steps {
                 echo "Deploy image from Docker Hub to AWS EC2"
                 sh "docker-compose down && docker-compose up -d"
             }
