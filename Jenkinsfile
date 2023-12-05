@@ -1,34 +1,46 @@
 pipeline {
-    agent any 
+    agent any
     
-    stages{
-        stage("Clone Code"){
+    stages {
+        stage("Clone code") {
             steps {
-                echo "Cloning the code"
-                git url:"https://github.com/LondheShubham153/django-notes-app.git", branch: "main"
+                echo "Clone code from the GitHub repository"
+                git url: "https://github.com/S47sawan/django-notes-app.git", branch: "main"
             }
         }
-        stage("Build"){
+        
+        stage("Build") {
             steps {
-                echo "Building the image"
-                sh "docker build -t my-note-app ."
+                echo "Building Image"
+                sh "docker build -t my-notes-app ."
             }
         }
-        stage("Push to Docker Hub"){
+        
+        stage("Scan") {
             steps {
-                echo "Pushing the image to docker hub"
-                withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
-                sh "docker tag my-note-app ${env.dockerHubUser}/my-note-app:latest"
-                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                sh "docker push ${env.dockerHubUser}/my-note-app:latest"
+                echo "Scan Image with Trivy"
+                sh "trivy image smihah/my-notes-app:latest --scanners vuln"
+
+            }
+        }
+        
+        stage("Push to DockerHub") {
+            steps {
+                echo "Push build image to DockerHub"
+        
+                // Use withCredentials block to securely handle DockerHub credentials
+                withCredentials([usernamePassword(credentialsId: "dockerHub", passwordVariable: "dockerHubPass", usernameVariable: "dockerHubUser")]) {
+                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+                    sh "docker tag my-notes-app:latest ${env.dockerHubUser}/my-notes-app:latest"
+                    sh "docker push ${env.dockerHubUser}/my-notes-app:latest"
                 }
             }
         }
+        
         stage("Deploy"){
-            steps {
-                echo "Deploying the container"
-                sh "docker-compose down && docker-compose up -d"
-                
+            steps{
+                echo "Deploy image from docker hub to AWS EC2"
+                sh "docker run -d -p 8000:8000 smihah/my-notes-app:latest "
             }
         }
     }
