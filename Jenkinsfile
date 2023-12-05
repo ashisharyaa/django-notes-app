@@ -37,11 +37,14 @@ pipeline {
             }
         }
         
-        stage("Deploy"){
-            steps{
-                echo "Deploy image from docker hub to AWS EC2"
-                sh "docker-compose down && docker-compose up -d"
+        stage("Deploy") {
+            steps {
+                echo "Deploy image from Docker Hub to AWS EC2"
+                dir('/var/lib/jenkins/workspace/Django-note-app') {
+                    sh "docker-compose down && docker-compose up -d"
+                }
             }
         }
+
     }
 }
