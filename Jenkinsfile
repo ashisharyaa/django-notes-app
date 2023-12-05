@@ -28,7 +28,7 @@ pipeline {
                 echo "Push build image to DockerHub"
         
                 // Use withCredentials block to securely handle DockerHub credentials
-                withCredentials([usernamePassword(credentialsId: "dockerHub", passwordVariable: "dockerHubPass", usernameVariable: "dockerHubUser")]) {
+                 withDockerRegistry([usernamePassword(credentialsId: "dockerHub", passwordVariable: "dockerHubPass", usernameVariable: "dockerHubUser")]) {
                     sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
                     sh "docker tag my-notes-app:latest ${env.dockerHubUser}/my-notes-app:latest"
                     sh "docker push ${env.dockerHubUser}/my-notes-app:latest"
