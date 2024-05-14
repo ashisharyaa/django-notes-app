@@ -1,14 +1,12 @@
 pipeline {
     
-    agent {
-        label 'dev-server'
-    }
+    agent any
     
     stages {
         stage("Clone code") {
             steps {
                 echo "Clone code from the GitHub repository"
-                git url: "https://github.com/S47sawan/django-notes-app.git", branch: "main"
+                git url: "https://github.com/ashisharyaa/django-notes-app.git", branch: "main"
             }
         }
         
